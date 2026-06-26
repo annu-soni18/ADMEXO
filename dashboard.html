@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ADMEXO — Admin Dashboard</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #0D0F14;
+      color: #E8EAF0;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      padding-bottom: 1.2rem;
+      border-bottom: 1px solid #2A2D3E;
+    }
+    .logo { font-size: 1.3rem; font-weight: 700; color: #6C63FF; }
+    .logo-sub { font-size: 0.75rem; color: #5A5E7A; margin-top: 0.2rem; }
+    .badge {
+      background: #1A1D27;
+      border: 1px solid #2A2D3E;
+      border-radius: 20px;
+      padding: 0.3rem 1rem;
+      font-size: 0.78rem;
+      color: #7B7F96;
+    }
+
+    /* 6-column stats grid */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .stats-row2 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: #1A1D27;
+      border: 1px solid #2A2D3E;
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      text-align: center;
+    }
+    .stat-number { font-size: 2rem; font-weight: 700; color: #8fff63; }
+    .stat-number.blue { color: #6C63FF; }
+    .stat-number.yellow { color: #FBBF24; }
+    .stat-number.purple { color: #A78BFA; }
+    .stat-label { font-size: 0.8rem; color: #7B7F96; margin-top: 0.3rem; }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .toolbar h2 { font-size: 1rem; color: #E8EAF0; font-weight: 600; }
+
+    .btn {
+      padding: 0.5rem 1.2rem;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn-primary { background: #6C63FF; color: white; }
+    .btn-secondary { background: #1A1D27; color: #A0A3B5; border: 1px solid #2A2D3E; }
+    .btn-danger { background: #EF4444; color: white; }
+
+    .table-wrap {
+      background: #1A1D27;
+      border: 1px solid #2A2D3E;
+      border-radius: 12px;
+      overflow: auto;
+      margin-bottom: 2rem;
+    }
+    table { width: 100%; border-collapse: collapse; min-width: 900px; }
+    thead { background: #12151F; }
+    th {
+      text-align: left;
+      padding: 0.9rem 1rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #5A5E7A;
+      white-space: nowrap;
+    }
+    td {
+      padding: 0.9rem 1rem;
+      font-size: 0.83rem;
+      color: #C0C3D8;
+      border-top: 1px solid #1E2130;
+      vertical-align: middle;
+    }
+    tr:hover td { background: #1E2135; }
+
+    .badge-pill {
+      display: inline-block;
+      padding: 0.15rem 0.7rem;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .green  { background:#0D2B1F; color:#4ADE80; border:1px solid #1A5C3A; }
+    .red    { background:#2B0D0D; color:#F87171; border:1px solid #5C1A1A; }
+    .blue   { background:#1A1D3A; color:#818CF8; border:1px solid #3730A3; }
+    .yellow { background:#2B2300; color:#FBBF24; border:1px solid #92400E; }
+    .gray   { background:#1A1D27; color:#6B7280; border:1px solid #374151; }
+
+    .pri-high   { background:#2B0D0D; color:#F87171; border:1px solid #5C1A1A; }
+    .pri-medium { background:#2B1D00; color:#FBBF24; border:1px solid #92400E; }
+    .pri-low    { background:#0D2B1F; color:#4ADE80; border:1px solid #1A5C3A; }
+
+    /* Lead detail cards */
+    .detail-section h2 { font-size: 1rem; font-weight: 600; color: #E8EAF0; margin-bottom: 1rem; }
+    .lead-card { background: #1A1D27; border: 1px solid #2A2D3E; border-radius: 12px; margin-bottom: 1rem; overflow: hidden; }
+    .lead-card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 1.2rem; cursor: pointer; user-select: none;
+    }
+    .lead-card-header:hover { background: #1E2135; }
+    .lead-name { font-weight: 600; font-size: 0.92rem; color: #E8EAF0; }
+    .lead-meta { font-size: 0.78rem; color: #5A5E7A; margin-top: 0.3rem; display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+    .arrow { color: #5A5E7A; font-size: 0.8rem; transition: transform 0.2s; }
+    .arrow.open { transform: rotate(180deg); }
+    .lead-card-body { display: none; padding: 1rem 1.2rem 1.2rem; border-top: 1px solid #2A2D3E; }
+    .lead-card-body.open { display: block; }
+    .field-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #5A5E7A; margin-bottom: 0.3rem; margin-top: 0.8rem; }
+    .field-value { font-size: 0.88rem; color: #C0C3D8; line-height: 1.6; }
+    .ai-box { background: #13112A; border: 1px solid #3D3572; border-radius: 10px; padding: 1rem 1.2rem; font-size: 0.85rem; color: #D4D0F0; line-height: 1.8; white-space: pre-wrap; margin-top: 0.4rem; }
+
+    .empty { text-align: center; padding: 3rem; color: #4A4E6A; font-size: 0.95rem; }
+    .loading { text-align: center; padding: 2rem; color: #6C63FF; font-size: 0.9rem; }
+
+    .tracking-row { display: flex; gap: 1rem; margin-top: 0.8rem; flex-wrap: wrap; }
+    .tracking-item { font-size: 0.8rem; color: #7B7F96; }
+    .tracking-item span { color: #E8EAF0; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="logo">⚡ ADMEXO — Admin Dashboard</div>
+    <div class="logo-sub">Lead Management & Email Tracking System</div>
+  </div>
+  <span class="badge" id="last-updated">Loading...</span>
+</div>
+
+<!-- Row 1: Lead stats -->
+<div class="stats">
+  <div class="stat-card">
+    <div class="stat-number" id="stat-total">—</div>
+    <div class="stat-label">Total Leads</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number blue" id="stat-sent">—</div>
+    <div class="stat-label">Emails Sent</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number" id="stat-today">—</div>
+    <div class="stat-label">Leads Today</div>
+  </div>
+</div>
+
+<!-- Row 2: Tracking stats -->
+<div class="stats-row2">
+  <div class="stat-card">
+    <div class="stat-number yellow" id="stat-opened">—</div>
+    <div class="stat-label">Emails Opened</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number yellow" id="stat-open-rate">—%</div>
+    <div class="stat-label">Open Rate</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-number purple" id="stat-clicked">—</div>
+    <div class="stat-label">Links Clicked</div>
+  </div>
+</div>
+
+<!-- Table -->
+<div class="toolbar">
+  <h2>All Leads</h2>
+  <div style="display:flex;gap:0.6rem;">
+    <button class="btn btn-secondary" onclick="loadLeads()">🔄 Refresh</button>
+    <button class="btn btn-primary" onclick="downloadCSV()">⬇️ Export CSV</button>
+    <button class="btn btn-danger" onclick="clearLeads()">🗑️ Clear All</button>
+  </div>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Company</th>
+        <th>Category</th>
+        <th>Priority</th>
+        <th>Email</th>
+        <th>Opened</th>
+        <th>Clicked</th>
+      </tr>
+    </thead>
+    <tbody id="leads-table-body">
+      <tr><td colspan="10"><div class="loading">Loading leads...</div></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Detail cards -->
+<div class="detail-section">
+  <h2>Lead Details & AI Responses</h2>
+  <div id="lead-cards"><div class="loading">Loading...</div></div>
+</div>
+
+<script>
+  // ── Replace this with your Render URL after deployment ──
+  const API_URL = "https://your-app-name.onrender.com";
+  let allLeads = [];
+
+  function isSent(val)    { return val === 1 || val === true || val === "1"; }
+  function isOpened(val)  { return val === 1 || val === true || val === "1"; }
+  function isClicked(val) { return val === 1 || val === true || val === "1"; }
+
+  async function loadLeads() {
+    try {
+      const res  = await fetch(`${API_URL}/api/leads`);
+      const data = await res.json();
+      allLeads   = data.leads  || [];
+      const stats = data.stats || {};
+      renderStats(stats);
+      renderTable();
+      renderCards();
+      document.getElementById("last-updated").textContent =
+        "Last updated: " + new Date().toLocaleTimeString();
+    } catch (err) {
+      document.getElementById("leads-table-body").innerHTML =
+        `<tr><td colspan="10" style="text-align:center;color:#EF4444;padding:2rem;">
+          ❌ Cannot reach backend. Make sure uvicorn is running.
+        </td></tr>`;
+    }
+  }
+
+  function renderStats(s) {
+    const now   = new Date();
+    const today = now.getFullYear() + '-' +
+      String(now.getMonth()+1).padStart(2,'0') + '-' +
+      String(now.getDate()).padStart(2,'0');
+    const todayCount = allLeads.filter(l => l.timestamp && l.timestamp.startsWith(today)).length;
+
+    document.getElementById("stat-total").textContent     = s.total      ?? allLeads.length;
+    document.getElementById("stat-sent").textContent      = s.sent       ?? "—";
+    document.getElementById("stat-today").textContent     = todayCount;
+    document.getElementById("stat-opened").textContent    = s.opened     ?? "—";
+    document.getElementById("stat-open-rate").textContent = (s.open_rate ?? "—") + "%";
+    document.getElementById("stat-clicked").textContent   = s.clicked    ?? "—";
+  }
+
+  function priorityClass(p) {
+    if (!p) return "gray";
+    const lower = p.toLowerCase();
+    if (lower === "high")   return "pri-high";
+    if (lower === "medium") return "pri-medium";
+    if (lower === "low")    return "pri-low";
+    return "gray";
+  }
+
+  function renderTable() {
+    const tbody = document.getElementById("leads-table-body");
+    if (allLeads.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="10"><div class="empty">No leads yet. Share the form link!</div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = allLeads.map(l => `
+      <tr>
+        <td>${l.timestamp || "—"}</td>
+        <td>${l.name || "—"}</td>
+        <td>${l.email || "—"}</td>
+        <td>${l.phone || "—"}</td>
+        <td>${l.company || "—"}</td>
+        <td><span class="badge-pill blue">${l.ai_category || "—"}</span></td>
+        <td><span class="badge-pill ${priorityClass(l.ai_priority)}">${l.ai_priority || "—"}</span></td>
+        <td>${isSent(l.email_sent)
+          ? '<span class="badge-pill green">✓ Sent</span>'
+          : '<span class="badge-pill red">✗ Failed</span>'}</td>
+        <td>${isOpened(l.email_opened)
+          ? '<span class="badge-pill yellow">👁 Opened</span>'
+          : '<span class="badge-pill gray">—</span>'}</td>
+        <td>${isClicked(l.link_clicked)
+          ? '<span class="badge-pill purple" style="background:#1A1D3A;color:#A78BFA;border:1px solid #4C1D95;">🔗 Clicked</span>'
+          : '<span class="badge-pill gray">—</span>'}</td>
+      </tr>
+    `).join("");
+  }
+
+  function renderCards() {
+    const container = document.getElementById("lead-cards");
+    if (allLeads.length === 0) {
+      container.innerHTML = `<div class="empty">No leads yet.</div>`;
+      return;
+    }
+    container.innerHTML = allLeads.map((l, i) => `
+      <div class="lead-card">
+        <div class="lead-card-header" onclick="toggleCard(${i})">
+          <div>
+            <div class="lead-name">#${i+1} · ${l.name} — ${l.email}</div>
+            <div class="lead-meta">
+              <span>${l.timestamp}</span>
+              <span class="badge-pill blue" style="font-size:0.7rem;">${l.ai_category || "—"}</span>
+              <span class="badge-pill ${priorityClass(l.ai_priority)}" style="font-size:0.7rem;">${l.ai_priority || "—"}</span>
+              ${isSent(l.email_sent) ? '<span style="color:#4ADE80">✓ Sent</span>' : '<span style="color:#F87171">✗ Failed</span>'}
+              ${isOpened(l.email_opened) ? '<span style="color:#FBBF24">👁 Opened</span>' : ''}
+              ${isClicked(l.link_clicked) ? '<span style="color:#A78BFA">🔗 Clicked</span>' : ''}
+            </div>
+          </div>
+          <span class="arrow" id="arrow-${i}">▼</span>
+        </div>
+        <div class="lead-card-body" id="body-${i}">
+          <div class="tracking-row">
+            <div class="tracking-item">📞 Phone: <span>${l.phone || "—"}</span></div>
+            <div class="tracking-item">🏢 Company: <span>${l.company || "—"}</span></div>
+          </div>
+          <div class="field-label">Requirement</div>
+          <div class="field-value">${l.requirement || "—"}</div>
+          <div class="field-label" style="margin-top:1rem;">✨ AI Response Sent</div>
+          <div class="ai-box">${l.ai_response || "—"}</div>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  function toggleCard(i) {
+    document.getElementById(`body-${i}`).classList.toggle("open");
+    document.getElementById(`arrow-${i}`).classList.toggle("open");
+  }
+
+  function downloadCSV() {
+    if (allLeads.length === 0) { alert("No leads to export."); return; }
+    const headers = ["timestamp","name","email","phone","company","requirement","ai_category","ai_priority","email_sent","email_opened","link_clicked"];
+    const rows = allLeads.map(l =>
+      headers.map(h => `"${(l[h] ?? "").toString().replace(/"/g,'""')}"`).join(",")
+    );
+    const csv  = [headers.join(","), ...rows].join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement("a");
+    a.href = url; a.download = "admexo_leads.csv"; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function clearLeads() {
+    if (!confirm("Delete ALL leads? This cannot be undone.")) return;
+    await fetch(`${API_URL}/api/clear`, { method: "DELETE" });
+    loadLeads();
+  }
+
+  loadLeads();
+  setInterval(loadLeads, 30000);
+</script>
+</body>
+</html>

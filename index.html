@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ADMEXO — Contact Us</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #F7F8FA;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 500px;
+    }
+    .logo {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #6C63FF;
+      margin-bottom: 0.3rem;
+    }
+    .logo-sub {
+      font-size: 0.78rem;
+      color: #9ca3af;
+      margin-bottom: 1.5rem;
+    }
+    h1 { font-size: 1.4rem; font-weight: 700; color: #111; margin-bottom: 0.3rem; }
+    .subtitle { font-size: 0.88rem; color: #888; margin-bottom: 1.8rem; }
+
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .field { margin-bottom: 1.1rem; }
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 0.4rem;
+    }
+    .optional { color: #aaa; font-weight: 400; font-size: 0.75rem; }
+    input, textarea {
+      width: 100%;
+      padding: 0.65rem 0.9rem;
+      border: 1.5px solid #E5E7EB;
+      border-radius: 8px;
+      font-size: 0.93rem;
+      font-family: Arial, sans-serif;
+      color: #111;
+      background: #FAFAFA;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus, textarea:focus {
+      border-color: #6C63FF;
+      background: #fff;
+    }
+    textarea { resize: vertical; min-height: 110px; }
+    .error-text { font-size: 0.78rem; color: #EF4444; margin-top: 0.3rem; }
+    .hidden { display: none !important; }
+
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background: linear-gradient(90deg, #6C63FF, #8B5CF6);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: opacity 0.2s;
+    }
+    button:hover { opacity: 0.88; }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* Success */
+    .success-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .success-title { font-size: 1.3rem; font-weight: 700; color: #111; margin-bottom: 0.4rem; }
+    .success-sub { font-size: 0.88rem; color: #666; margin-bottom: 1.5rem; line-height: 1.6; }
+
+    .ai-meta {
+      display: flex;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .badge {
+      padding: 0.25rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-cat { background: #EEF2FF; color: #6C63FF; }
+    .badge-high { background: #FEF2F2; color: #EF4444; }
+    .badge-medium { background: #FFFBEB; color: #D97706; }
+    .badge-low { background: #F0FDF4; color: #16A34A; }
+
+    .reply-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #6C63FF;
+      margin-bottom: 0.6rem;
+    }
+    .reply-box {
+      background: #F5F4FF;
+      border: 1px solid #DDD8FF;
+      border-radius: 10px;
+      padding: 1.2rem 1.4rem;
+      font-size: 0.88rem;
+      color: #333;
+      line-height: 1.8;
+      white-space: pre-wrap;
+      margin-bottom: 1.2rem;
+    }
+    .secondary-btn { background: #F3F4F6; color: #444; font-weight: 500; }
+    .secondary-btn:hover { background: #E5E7EB; opacity: 1; }
+    .footer { text-align: center; font-size: 0.75rem; color: #bbb; margin-top: 1.5rem; }
+    #loading-msg { text-align: center; color: #6C63FF; font-size: 0.88rem; margin-top: 0.8rem; display: none; }
+  </style>
+</head>
+<body>
+
+<!-- FORM PAGE -->
+<div class="card" id="form-page">
+  <div class="logo">⚡ ADMEXO</div>
+  <div class="logo-sub">AI-Powered Growth Engineering</div>
+  <h1>Get in touch</h1>
+  <p class="subtitle">Fill the form — we'll reply to your email within minutes.</p>
+
+  <div class="row">
+    <div class="field">
+      <label>Full Name</label>
+      <input type="text" id="name" placeholder="Rahul Sharma"/>
+      <div class="error-text hidden" id="err-name">Name is required</div>
+    </div>
+    <div class="field">
+      <label>Phone Number</label>
+      <input type="tel" id="phone" placeholder="9876543210"/>
+      <div class="error-text hidden" id="err-phone">Phone is required</div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label>Email Address</label>
+      <input type="email" id="email" placeholder="rahul@company.com"/>
+      <div class="error-text hidden" id="err-email">Enter a valid email</div>
+    </div>
+    <div class="field">
+      <label>Company Name <span class="optional">(optional)</span></label>
+      <input type="text" id="company" placeholder="ABC Pvt Ltd"/>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Requirement / Message</label>
+    <textarea id="requirement" placeholder="Tell us what you're looking for — e.g. Need AI automation for our sales team..."></textarea>
+    <div class="error-text hidden" id="err-req">Please describe your requirement</div>
+  </div>
+
+  <button id="submit-btn" onclick="handleSubmit()">Submit →</button>
+  <div id="loading-msg">⏳ Generating AI response & sending email...</div>
+  <div class="footer">Your information is safe with us.</div>
+</div>
+
+<!-- SUCCESS PAGE -->
+<div class="card hidden" id="success-page">
+  <div class="success-icon">✅</div>
+  <div class="success-title" id="success-title">Thank you!</div>
+  <p class="success-sub" id="success-sub">We've received your enquiry.</p>
+
+  <div class="ai-meta" id="ai-meta"></div>
+
+  <div class="reply-label">✨ Reply sent to your inbox</div>
+  <div class="reply-box" id="reply-box"></div>
+
+  <div class="error-text hidden" id="email-warn" style="margin-bottom:1rem;">
+    ⚠️ Email delivery failed — SendGrid not configured yet.
+  </div>
+
+  <button class="secondary-btn" onclick="resetForm()">Submit another enquiry</button>
+</div>
+
+<script>
+  // ── Change this to your ngrok URL when sharing ──────────────────────────
+  // ── Replace this with your Render URL after deployment ──
+  const API_URL = "https://your-app-name.onrender.com";
+
+  async function handleSubmit() {
+    const name        = document.getElementById("name").value.trim();
+    const phone       = document.getElementById("phone").value.trim();
+    const email       = document.getElementById("email").value.trim();
+    const company     = document.getElementById("company").value.trim();
+    const requirement = document.getElementById("requirement").value.trim();
+
+    // Clear errors
+    ["name","phone","email","req"].forEach(id =>
+      document.getElementById(`err-${id}`).classList.add("hidden")
+    );
+
+    // Validate
+    let hasError = false;
+    if (!name)                          { document.getElementById("err-name").classList.remove("hidden");  hasError = true; }
+    if (!phone)                         { document.getElementById("err-phone").classList.remove("hidden"); hasError = true; }
+    if (!email || !email.includes("@")) { document.getElementById("err-email").classList.remove("hidden"); hasError = true; }
+    if (!requirement)                   { document.getElementById("err-req").classList.remove("hidden");   hasError = true; }
+    if (hasError) return;
+
+    const btn = document.getElementById("submit-btn");
+    btn.disabled = true;
+    btn.textContent = "Sending...";
+    document.getElementById("loading-msg").style.display = "block";
+
+    try {
+      const res = await fetch(`${API_URL}/api/submit`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, phone, email, company, requirement }),
+      });
+      const data = await res.json();
+
+      // Show success
+      const firstName = name.split(" ")[0];
+      document.getElementById("success-title").textContent = `Thank you, ${firstName}!`;
+      document.getElementById("success-sub").innerHTML =
+        `We've received your enquiry and sent a personalised reply to <strong>${email}</strong>`;
+      document.getElementById("reply-box").textContent = data.ai_response;
+
+      // Show AI category + priority badges
+      const priorityClass = {
+        "High": "badge-high", "Medium": "badge-medium", "Low": "badge-low"
+      }[data.ai_priority] || "badge-medium";
+
+      document.getElementById("ai-meta").innerHTML = `
+        <span class="badge badge-cat">📂 ${data.ai_category}</span>
+        <span class="badge ${priorityClass}">🎯 ${data.ai_priority} Priority</span>
+      `;
+
+      if (!data.email_sent) {
+        document.getElementById("email-warn").classList.remove("hidden");
+      }
+
+      document.getElementById("form-page").classList.add("hidden");
+      document.getElementById("success-page").classList.remove("hidden");
+
+    } catch (err) {
+      alert("Server error. Make sure backend is running on port 8000.");
+      btn.disabled = false;
+      btn.textContent = "Submit →";
+      document.getElementById("loading-msg").style.display = "none";
+    }
+  }
+
+  function resetForm() {
+    ["name","phone","email","company","requirement"].forEach(id => {
+      document.getElementById(id).value = "";
+    });
+    document.getElementById("submit-btn").disabled = false;
+    document.getElementById("submit-btn").textContent = "Submit →";
+    document.getElementById("loading-msg").style.display = "none";
+    document.getElementById("email-warn").classList.add("hidden");
+    document.getElementById("success-page").classList.add("hidden");
+    document.getElementById("form-page").classList.remove("hidden");
+  }
+</script>
+</body>
+</html>
