@@ -234,8 +234,8 @@
 </div>
 
 <script>
-  // ── Replace this with your Render URL after deployment ──
-  const API_URL = "https://your-app-name.onrender.com";
+  // Auto-detects the current domain — works on localhost AND Render
+  const API_URL = window.location.origin;
   let allLeads = [];
 
   function isSent(val)    { return val === 1 || val === true || val === "1"; }
